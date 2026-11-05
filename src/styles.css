@@ -1,0 +1,19 @@
+:root {
+  --sb-green: #006241;
+  --sb-green-light: #1e3932;
+  --bg-light: #f9f9f9;
+  --text-dark: #212121;
+  --gray-border: #e0e0e0;
+  --amarillo-patito: #e8f793;
+  --verde-bonito: #6ff083;
+  --lilac: #cc8afb;
+  --azul-brigido: #1b18ea;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-dark);
+  height: 100%;
+}

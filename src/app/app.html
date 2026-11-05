@@ -1,0 +1,111 @@
+<!-- FONDO GLOBAL ESTILO STARBUCKS -->
+<div class="app-background" [class.solido]="autenticado"></div>
+
+<div class="app-container">
+
+  <!-- PÁGINA 1: PANTALLA DE INICIO DE SESIÓN -->
+  @if (!autenticado) {
+  <div class="login-view">
+    <div class="login-card shadow-glass">
+      <div class="title-group">
+        <h1 class="login-title title-a">PEDIDOS</h1>
+        <h1 class="login-title title-b">COFFEE</h1>
+        <h1 class="login-title title-c">360</h1>
+      </div>
+      <div class="logo-icon">☕</div>
+      <p>Sistema de gestión de barra</p>
+      <button class="btn btn-starbucks-main" (click)="login()">Iniciar Sesión </button>
+    </div>
+
+    <div class="login-image-side"></div>
+  </div>
+  }
+
+  <!-- PÁGINA 2: DASHBOARD (Solo visible si estás logueado) -->
+  @else {
+  <div class="dashboard-view">
+
+    <!-- Barra superior -->
+    <header class="dashboard-header">
+      <div class="brand-small">
+        <h2>PEDIDOS COFFEE 360</h2>
+        <div class="coffee-icon nav-coffe">☕</div>
+      </div>
+      <div class="user-menu">
+        <span class="greeting">Hola, <strong>{{usuario}}</strong></span>
+        <button class="btn btn-outline" (click)="logout()">Cerrar Sesión</button>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-content">
+
+      <!-- Tarjeta de Controles -->
+      <div class="controls-card shadow-glass">
+        <div class="actions-row">
+
+          <!-- Botón Consultar (A la izquierda) -->
+          <button class="btn btn-starbucks-main" (click)="consultarPedidos()" [disabled]="cargandoPedidos">
+            {{ pedidos.length > 0 ? '↻ Actualizar Fila' : 'Consultar Pedidos' }}
+          </button>
+
+          <div class="divider"></div>
+
+          <!-- Formulario Crear (A la derecha) -->
+          <div class="create-group">
+            <input type="text" [(ngModel)]="nuevoProducto" placeholder="Ej: Caramel Macchiato Venti"
+              class="input-modern" [disabled]="cargandoPedidos">
+            <button class="btn btn-dark" (click)="crearPedido()" [disabled]="cargandoPedidos || !nuevoProducto">
+              Crear pedido</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Alertas y Carga -->
+      @if (cargandoPedidos) {
+      <div class="loader-box shadow-glass">
+        Conectando con la barra...
+        <div class="coffee-icon">☕</div>
+      </div>
+      }
+      @if (errorPedidos) {
+      <div class="error-box shadow-glass">⚠️ {{errorPedidos}}</div>
+      }
+
+      <!-- Grilla de Pedidos -->
+      <div class="orders-grid">
+        @for(pedido of pedidos; track pedido.id){
+        <article class="order-card shadow-glass">
+          <div class="card-head">
+            <span class="order-number">#{{pedido.id}}</span>
+            <span class="status-badge" [class]="pedido.estado">{{pedido.estado.replace('_', ' ')}}</span>
+          </div>
+
+          <!-- Nombres de café dinámicos para los pedidos antiguos sin nombre -->
+          <h3 class="product-name">
+            {{ pedido.producto ? pedido.producto : '☕ ' + (['Caramel Macchiato', 'Latte Vainilla', 'Espresso Americano',
+            'Mocha Blanco', 'Frappuccino', 'Cappuccino'][pedido.id % 6]) }}
+          </h3>
+
+          <div class="card-actions">
+            <button class="btn btn-action" (click)="actualizarPedido(pedido.id, pedido.estado)"
+              [disabled]="cargandoPedidos">Avanzar Estado</button>
+            <button class="btn btn-danger" (click)="eliminarPedido(pedido.id)"
+              [disabled]="cargandoPedidos">Eliminar</button>
+          </div>
+        </article>
+        }
+      </div>
+
+      <!-- Mensaje si la lista está vacía -->
+      @if (pedidos.length === 0 && !cargandoPedidos) {
+      <div class="empty-state shadow-glass">
+        <p>La barra está limpia. Presiona "Consultar Pedidos" para revisar la base de datos.</p>
+      </div>
+      }
+
+    </main>
+  </div>
+  }
+</div>
